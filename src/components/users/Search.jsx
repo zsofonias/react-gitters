@@ -11,9 +11,17 @@ class Search extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.searchUsers(this.state.text);
-    this.setState({ text: '' });
+    if (this.state.text === '') {
+      this.props.setAlert('Search value is required', 'danger');
+    } else {
+      this.props.searchUsers(this.state.text);
+      this.setState({ text: '' });
+    }
   };
+
+  // handleClearClick = e => {
+  //   this.props.clearUsers();
+  // };
 
   render() {
     return (
@@ -32,6 +40,14 @@ class Search extends Component {
             className='btn btn-dark btn-block'
           />
         </form>
+        {this.props.showClear && (
+          <button
+            onClick={this.props.clearUsers}
+            className='btn btn-light btn-block'
+          >
+            Clear
+          </button>
+        )}
       </div>
     );
   }
