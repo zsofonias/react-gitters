@@ -1,18 +1,21 @@
-import React, { useEffect, Fragment } from 'react';
-
+import React, { useEffect, useContext, Fragment } from 'react';
 import { Link } from 'react-router-dom';
+
+import GithubContext from '../../context/github/githubContext';
 
 import Spinner from '../layout/Spinner';
 import Repos from '../repos/Repos';
 
-const User = ({ getUser, getUserRepos, match, ...props }) => {
+const User = ({ match }) => {
+  const githubContext = useContext(GithubContext);
   useEffect(() => {
-    getUser(match.params.login);
-    getUserRepos(match.params.login);
+    githubContext.getUser(match.params.login);
+    githubContext.getUserRepos(match.params.login);
     // eslint-disable-next-line
   }, []);
 
-  if (props.loading) {
+  const { user, loading, repos } = githubContext;
+  if (loading) {
     return <Spinner />;
   } else {
     const {
@@ -28,7 +31,7 @@ const User = ({ getUser, getUserRepos, match, ...props }) => {
       public_repos,
       public_gists,
       hireable
-    } = props.user;
+    } = user;
     return (
       <Fragment>
         <Link to='/' className='btn btn-light'>
@@ -88,7 +91,7 @@ const User = ({ getUser, getUserRepos, match, ...props }) => {
           </div>
           <div className='badge badge-dark'>Public Gists: {public_gists}</div>
         </div>
-        {props.repos.length > 0 && <Repos repos={props.repos} />}
+        {repos.length > 0 && <Repos repos={repos} />}
       </Fragment>
     );
   }
